@@ -16,6 +16,7 @@ model User {
   name        String  @unique
   password    String
   phoneNumber String?
+  itemsInBag  Int     @default(0)
   posts       Post[]
 }
 
