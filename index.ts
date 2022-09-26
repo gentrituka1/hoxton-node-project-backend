@@ -131,7 +131,7 @@ app.get('/validate', async (req, res) => {
         }
     } catch (error) {
         //@ts-ignore
-        res.status(451).send({ error: error.message });
+        res.status(404).send({ error: error.message });
     }
 })
 
