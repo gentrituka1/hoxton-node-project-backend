@@ -13,7 +13,7 @@ datasource db {
 model User {
   id          Int     @id @default(autoincrement())
   email       String  @unique
-  name        String?
+  name        String  @unique
   password    String
   phoneNumber String?
   posts       Post[]
@@ -35,6 +35,6 @@ model Post {
 
 model Tag {
   id    Int    @id @default(autoincrement())
-  name  String
+  name  String @unique
   posts Post[]
 }
