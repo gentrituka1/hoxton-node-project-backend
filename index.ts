@@ -125,7 +125,9 @@ app.get('/validate', async (req, res) => {
             const user = await getCurrentUser(req.headers.authorization);
             //@ts-ignore
             const token = getToken(user.id);
-            res.send({ user, token });
+            res.send({ data: {user, token}});
+        } else {
+            res.status(401).send({error: "No token provided"})
         }
     } catch (error) {
         //@ts-ignore
