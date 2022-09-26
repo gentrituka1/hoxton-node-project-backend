@@ -24,6 +24,7 @@ model Post {
   title   String
   image   String
   content String?
+  price   Int     @default(1)
   saved   Boolean
   toSell  Boolean
   toBuy   Boolean

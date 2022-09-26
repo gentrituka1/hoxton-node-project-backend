@@ -41,6 +41,53 @@ app.get('/posts', async (req, res) => {
     res.send(posts);
 })
 
+app.get('/posts/:id', async (req, res) => {
+    const post = await prisma.post.findUnique({
+        where: {
+            id: Number(req.params.id)
+        },
+        include: {user: true, tags: true}
+    })
+    res.send(post);
+})
+
+app.post('/posts', async (req, res) => {
+    const post = await prisma.post.create({
+        data: {
+            title: req.body.title,
+            image: req.body.image,
+            content: req.body.content,
+            saved: false,
+            toSell: req.body.toSell,
+            toBuy: req.body.toBuy,
+            price: Number(req.body.price),
+            user: {
+                connect: {
+                    id: Number(req.body.userId)
+                }
+            },
+            tags: {
+                
+            }
+            
+        },
+        include: {user: true, tags: true}
+    })
+    res.send(post);
+})
+
+app.post('/tags', async (req, res) => {
+    const tag = await prisma.tag.create({
+        data: {
+            name: req.body.name,
+            posts: {
+                connectOrCreate
+            }
+        }
+    })
+    res.send(tag);
+})
+
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 })
