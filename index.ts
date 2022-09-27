@@ -72,7 +72,7 @@ app.post("/signup", async (req, res) => {
       },
     });
     if (users.length > 0) {
-      return res.status(400).send({ message: "User already exists" });
+      return res.status(401).send({ message: "User already exists" });
     } else {
       const user = await prisma.user.create({
         data: {
@@ -99,10 +99,10 @@ app.post("/login", async (req, res) => {
     where: {
       OR: [
         {
-          email: req.body.email,
+          email: req.body.login,
         },
         {
-          name: req.body.name,
+          name: req.body.login,
         },
       ],
     },
@@ -112,10 +112,6 @@ app.post("/login", async (req, res) => {
   })
 
   const user = users[0];
-
-  let shouldLogin = bcrypt.compareSync(req.body.password, user.password)
-
-  console.log(shouldLogin)
 
   if(user && bcrypt.compareSync(req.body.password, user.password)) {
     const token = getToken(user.id);
