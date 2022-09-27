@@ -79,13 +79,14 @@ app.post("/signup", async (req, res) => {
           email: req.body.email,
           name: req.body.name,
           password: bcrypt.hashSync(req.body.password, 10),
-          phoneNumber: req.body.phoneNumber,
+          phoneNumber: req.body.phoneNumber
         },
         include: {
           posts: true,
         },
       });
-      res.send(user);
+      const token = getToken(user.id);
+      res.send({user, token});
     }
   } catch (error) {
     //@ts-ignore
@@ -111,6 +112,11 @@ app.post("/login", async (req, res) => {
   })
 
   const user = users[0];
+
+  let shouldLogin = bcrypt.compareSync(req.body.password, user.password)
+
+  console.log(shouldLogin)
+
   if(user && bcrypt.compareSync(req.body.password, user.password)) {
     const token = getToken(user.id);
     res.send({ user, token });
@@ -125,7 +131,7 @@ app.get('/validate', async (req, res) => {
             const user = await getCurrentUser(req.headers.authorization);
             //@ts-ignore
             const token = getToken(user.id);
-            res.send({ data: {user, token}});
+            res.send({user, token});
         } else {
             res.status(401).send({error: "No token provided"})
         }
