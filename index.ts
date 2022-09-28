@@ -188,21 +188,24 @@ app.post("/posts", async (req, res) => {
   }
 });
 
-app.patch("/posts/:id", async (req, res) => {
-  // want to update only the fields that are provided
+app.get("/savedPosts", async (req, res) => {
+  const posts = await prisma.post.findMany({
+    where: {
+      saved: true,
+    },
+    include: { user: true, tags: true },
+  });
+  res.send(posts);
+})
 
+app.patch("/posts/:id", async (req, res) => {
+  try {
   const post = await prisma.post.update({
     where: {
       id: Number(req.params.id)
     },
     data: {
-      title: req.body.title,
-      image: req.body.image,
-      content: req.body.content,
       saved: req.body.saved,
-      toSell: req.body.toSell,
-      toBuy: req.body.toBuy,
-      price: Number(req.body.price),
       user: {
         connect: {
           id: Number(req.body.userId)
@@ -219,6 +222,10 @@ app.patch("/posts/:id", async (req, res) => {
     },
   })
   res.send(post);
+} catch (error) {
+  // @ts-ignore
+  res.status(404).send({ error: error.message });
+}
 })
 
 app.post("/tags", async (req, res) => {
