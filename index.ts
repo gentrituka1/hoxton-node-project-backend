@@ -188,6 +188,39 @@ app.post("/posts", async (req, res) => {
   }
 });
 
+app.patch("/posts/:id", async (req, res) => {
+  // want to update only the fields that are provided
+
+  const post = await prisma.post.update({
+    where: {
+      id: Number(req.params.id)
+    },
+    data: {
+      title: req.body.title,
+      image: req.body.image,
+      content: req.body.content,
+      saved: req.body.saved,
+      toSell: req.body.toSell,
+      toBuy: req.body.toBuy,
+      price: Number(req.body.price),
+      user: {
+        connect: {
+          id: Number(req.body.userId)
+        },
+      },
+      tags: {
+        connectOrCreate: req.body.tags.map((tag: string) => {
+          return {
+            where: { name: tag },
+            create: { name: tag },
+          };
+        })
+      }
+    },
+  })
+  res.send(post);
+})
+
 app.post("/tags", async (req, res) => {
   const tag = await prisma.tag.create({
     data: {
