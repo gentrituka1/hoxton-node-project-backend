@@ -210,14 +210,6 @@ app.patch("/posts/:id", async (req, res) => {
         connect: {
           id: Number(req.body.userId)
         },
-      },
-      tags: {
-        connectOrCreate: req.body.tags.map((tag: string) => {
-          return {
-            where: { name: tag },
-            create: { name: tag },
-          };
-        })
       }
     },
   })
