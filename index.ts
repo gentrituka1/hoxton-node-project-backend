@@ -206,12 +206,7 @@ app.patch("/posts/:id", async (req, res) => {
     },
     data: {
       saved: req.body.saved,
-      user: {
-        connect: {
-          id: Number(req.body.userId)
-        },
-      }
-    },
+    }
   })
   res.send(post);
 } catch (error) {
