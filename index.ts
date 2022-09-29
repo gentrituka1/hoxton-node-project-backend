@@ -169,7 +169,13 @@ app.post("/posts", async (req, res) => {
           connect: {
             id: Number(req.body.userId),
           },
-        }
+        },
+        tags: {
+          connectOrCreate: req.body.tags.map((tag: string) => ({
+            where: { name: tag },
+            create: { name: tag }
+          })
+    )}
       },
       include: { user: true, tags: true },
     });
@@ -179,6 +185,15 @@ app.post("/posts", async (req, res) => {
     res.status(404).send({ error: error.message });
   }
 });
+
+app.delete("/posts/:id", async (req, res) => {
+  const post = await prisma.post.delete({
+    where: {
+      id: Number(req.params.id),
+    },
+  });
+  res.send(post);
+})
 
 app.get("/savedPosts", async (req, res) => {
   const posts = await prisma.post.findMany({
