@@ -169,15 +169,7 @@ app.post("/posts", async (req, res) => {
           connect: {
             id: Number(req.body.userId),
           },
-        },
-        tags: {
-          connectOrCreate: req.body.tags.map((tag: string) => {
-            return {
-              where: { name: tag },
-              create: { name: tag },
-            };
-          }),
-        },
+        }
       },
       include: { user: true, tags: true },
     });
