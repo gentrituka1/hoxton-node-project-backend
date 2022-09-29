@@ -231,6 +231,22 @@ app.post("/tags", async (req, res) => {
   res.send(tag);
 });
 
+app.get("/posts/post/:title", async (req, res) => {
+  try {
+    const { title } = req.params;
+
+    const posts = await prisma.post.findMany({
+      where: { title: { contains: title } },
+      include: { user: true, tags: true },
+    });
+
+    res.send(posts);
+  } catch (error) {
+    // @ts-ignore
+    res.status(500).send({ error: error.message });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server running on port http://localhost:${port}`);
 });
