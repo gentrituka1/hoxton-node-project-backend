@@ -205,7 +205,7 @@ app.patch("/posts/:id", async (req, res) => {
       id: Number(req.params.id)
     },
     data: {
-      saved: req.body.saved,
+      saved: req.body.saved
     }
   })
   res.send(post);
