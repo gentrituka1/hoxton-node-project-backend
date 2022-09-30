@@ -154,6 +154,27 @@ app.get("/posts/:id", async (req, res) => {
   res.send(post);
 });
 
+app.get("/myPosts", async (req, res) => {
+  try {
+    if (req.headers.authorization) {
+      const user = await getCurrentUser(req.headers.authorization);
+      const posts = await prisma.post.findMany({
+        where: {
+          //@ts-ignore
+          userId: user.id,
+        },
+        include: { user: true, tags: true },
+      });
+      res.send(posts);
+    } else {
+      res.status(401).send({ error: "No token provided" });
+    }
+  } catch (error) {
+    //@ts-ignore
+    res.status(404).send({ error: error.message });
+  }
+})
+
 app.post("/posts", async (req, res) => {
   try {
     const post = await prisma.post.create({
